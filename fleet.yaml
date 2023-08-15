@@ -1,0 +1,49 @@
+# The default namespace to be applied to resources. This field is not used to
+# enforce or lock down the deployment to a specific namespace, but instead
+# provide the default value of the namespace field if one is not specified
+# in the manifests.
+# Default: default
+defaultNamespace: quannlm
+
+helm:
+  # Use a custom location for the Helm chart. This can refer to any go-getter URL.
+  # This allows one to download charts from most any location.  Also know that
+  # go-getter URL supports adding a digest to validate the download. If repo
+  # is set below this field is the name of the chart to lookup
+  chart: /workspace/source/deploy/helm
+  # A https URL to a Helm repo to download the chart from. It's typically easier
+  # to just use `chart` field and refer to a tgz file.  If repo is used the
+  # value of `chart` will be used as the chart name to lookup in the Helm repository.
+  # repo: https://helm.repo.lenses.io
+  # A custom release name to deploy the chart as. If not specified a release name
+  # will be generated.
+  releaseName: sample
+
+  # Makes helm skip the check for its own annotations
+  takeOwnership: true
+
+  # Override immutable resources. This could be dangerous.
+  # force: true
+
+  # All labels on Rancher clusters are available using global.fleet.clusterLabels.LABELNAME
+  # These can now be accessed directly as variables
+    # variableName: global.fleet.clusterLabels.LABELNAME
+  # Path to any values files that need to be passed to helm during install
+  valuesFiles:
+    # - values.yaml # Loaded by default
+    - custom-values.yaml
+
+  # !NOTE: MUST set timeout when use --atomic see https://github.com/rancher/fleet/issues/928#issuecomment-1279405419
+  # Set the Helm --atomic flag when upgrading
+  # atomic: true
+  # timeoutSeconds: 300
+
+diff:
+  comparePatches:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: sample
+    namespace: mps
+    operations:
+    - {"op": "remove", "path": "/spec/template/spec/containers/0/image"}
+    - {"op": "remove", "path": "/spec/replicas"}

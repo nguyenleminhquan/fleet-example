@@ -1,0 +1,13 @@
+replicaCount: 1
+
+fullnameOverride: "sample"
+
+image:
+  repository: nguyenleminhquan/nodejs-assignment
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "stable"
+
+service:
+  type: ClusterIP
+  port: 3000
